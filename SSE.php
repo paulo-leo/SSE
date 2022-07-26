@@ -1,5 +1,5 @@
 <?php
-
+/**/
 class SSE
 {
     private $data;

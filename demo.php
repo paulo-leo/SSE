@@ -15,7 +15,32 @@
  $sse->delete('email');
 
 /*Imprime a resposta do servidor*/
- $sse->response();
+ //$sse->response();
+
+ $file = @file_get_contents('https://github.com/paulo-leo/SSE/archive/main.zip');
+
+ if($file)
+ {
+
+     $z = new ZipArchive();
+
+    // Abrindo o arquivo para leitura/escrita
+     $abriu = $z->open($file);
+    if ($abriu === true) {
+    
+        // Obtendo o conteudo de um arquivo pelo nome
+        $conteudo_txt = $z->getFromName('SSE.php');
+    
+        // Obtendo o conteudo de um arquivo pelo indice
+        $conteudo_php = $z->getFromIndex(2);
+    
+        // Salvando o arquivo
+        $z->close();
+    
+    } else {
+        echo 'Erro: '.$abriu;
+    }
+ }
 
 
 

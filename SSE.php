@@ -17,8 +17,19 @@ class SSE
     public function __construct()
     {
         $this->data = array(); 
-        $this->data['event_trigger_date'] = date("r");
+        $this->data['event_trigger_date'] = date("Y-m-d h:m:s");
         $this->event = 'pl_sse_php';
+    }
+
+    public function setEvent($name) : void
+    {
+      $this->event = $name;
+      $this->setData('event_name',$name);
+    }
+
+    public function setAction($name) : void
+    {
+      $this->setData('event_action',$name);
     }
     
      /*
@@ -42,7 +53,7 @@ class SSE
      */
     public function setTime($time) : void
     {
-        $this->time = $time * 1000;
+        $this->time = $time <= 0 ? 100 : $time * 1000;
     }
     /*
      Faz  a junção do array data e outro array parametrizado
@@ -85,31 +96,35 @@ class SSE
         }else return false;
      }
 
+  
+
+    public function setHeader() : void
+    {
+      header('Content-Type: text/event-stream');
+      header('Cache-Cotrol: no-cache');
+    }
     /*
       Imprime a resposta do servidor
      */
-    public function response() : void
+    public function response($cond=false,$h=true) : void
     {
-        
-        $content = null;
+        $content = "";
         $value = json_encode($this->data);
         $this->id =  $this->id ? $this->id : uniqid(); 
         
-        
-        $content .= "data:{$value}\n\n";
-        $content .= "event: {$this->event}\n";
+        $content .= "event: {$this->event}\n\n";
+        $content .= "data:{$value}\n";        
         $content .= "id: {$this->id}\n";
         $content .= "retry: {$this->time}\n";
 
-        header('Content-Type: text/event-stream');
-        header('Cache-Cotrol: no-cache');
+        if($h) $this->setHeader();
 
-        echo $content;
-        echo PHP_EOL;
-        ob_flush();
-        flush();
-
+        if($cond)
+        {
+          echo $content;
+          echo PHP_EOL;
+          ob_flush();
+          flush();
+       }
     }
-
-
 }

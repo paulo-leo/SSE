@@ -1,21 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>Teste de atualizações do servidor</h1>
-    <div id="result"></div>
-    <script>
-      if (typeof EventSource !== "undefined") {
-        var source = new EventSource("http://localhost/SSE/demo.php");
+  <head>
+    <meta charset="utf-8">
+    <script src="sse.js"></script>
 
-        source.onmessage = function (event) {
-          document.getElementById("result").innerHTML += event.data + "<br>";
-
-          console.log(event);
-        };
-      } else {
-        document.getElementById("result").innerHTML =
-          "Desculpe, seu navegador não suporta eventos enviados pelo servidor...";
-      }
-    </script>
+<title key="title">SSE DEMO</title>
+</head>
+    <body>
+      <div class="container">
+       <ul id="lista"></ul>
+    </div>
   </body>
+<script>
+  
+     $sse.url('http://localhost/sse/demo.php');
+
+     const nts = [];
+     var i = 0;
+   
+     $sse.action("b",(e) => {
+       
+      i++; 
+      nts.push(e);
+
+     document.getElementById("lista").innerHTML = nts.map((e)=>{
+         return `<li>
+                   <h3>${e.name}</h3>
+                   <p>${e.event_trigger_date} | EN${i}</p>
+                </li>`;
+     }).join('');
+
+   });
+</script>
 </html>
+
+
